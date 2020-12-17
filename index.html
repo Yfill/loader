@@ -45,6 +45,7 @@
     src="https://cdn.jsdelivr.net/npm/@yfill/theme"
     onload="Theme.run({mode:'dark'});"
   ></script>
+  <script src="https://vendor.yfill.cn/theme-change-btn.js"></script>
   <script
     src="https://vendor.yfill.cn/statistics.js"
     async
@@ -58,6 +59,7 @@
         block.setAttribute('background-color-1', '');
         hljs.highlightBlock(block);
       });
+      themeChangeBtn.init();
     }).catch(function (e) {
       console.error(e.message);
       document.getElementById('content').innerHTML = 'Failed to load';
