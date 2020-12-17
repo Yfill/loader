@@ -65,7 +65,7 @@ yarn add @yfill/loader
   <div id="template">
     <h3>Vue-multiselect</h3>
     <multiselect v-model="value" :options="options"></multiselect>
-    <h3>Vue.Draggable</h3>
+    <h3>Vue.Draggable(dragging: {{drag}})</h3>
     <draggable
       v-model="myArray"
       group="people"
