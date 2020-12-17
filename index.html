@@ -201,9 +201,7 @@
         },
         async created() {
           const dayjs = await this.$loader('dayjs');
-          const lodash = await this.$loader('lodash');
           console.log(dayjs().toString());
-          console.dir(lodash);
         }
       }).$mount('#template');
     })
