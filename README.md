@@ -64,7 +64,9 @@ yarn add @yfill/loader
   ```html
   <div id="template">
     <h3>Vue-multiselect</h3>
-    <multiselect v-model="value" :options="options"></multiselect>
+    <multiselect 
+      v-model="value" 
+      :options="options"></multiselect>
     <h3>Vue.Draggable(dragging: {{drag}})</h3>
     <draggable
       v-model="myArray"
@@ -72,7 +74,11 @@ yarn add @yfill/loader
       @start="drag=true"
       @end="drag=false"
     >
-      <div v-for="element in myArray" :key="element.id">{{element.name}}</div>
+      <div 
+        v-for="element in myArray" 
+        :key="element.id">
+        {{element.name}}
+      </div>
     </draggable>
   </div>
   <script>
