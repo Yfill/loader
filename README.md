@@ -76,7 +76,8 @@ yarn add @yfill/loader
     >
       <div 
         v-for="element in myArray" 
-        :key="element.id">
+        :key="element.id"
+      >
         {{element.name}}
       </div>
     </draggable>
