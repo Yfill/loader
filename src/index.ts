@@ -1,3 +1,4 @@
+import './vue';
 import type { Vue } from 'vue/types/vue';
 import type { AsyncComponent } from 'vue/types/options';
 import type { PluginObject } from 'vue/types/plugin';
@@ -7,14 +8,6 @@ import { vueComponentLoad, load, unload } from './utils/load';
 import { setLoadedObj, getLoadBase } from './utils/store';
 
 declare const window: Window & { define: Function };
-
-declare module 'vue/types/vue' {
-  // eslint-disable-next-line no-shadow
-  interface Vue {
-    // eslint-disable-next-line no-use-before-define
-    $loader: Loader
-  }
-}
 
 export type LoadStatus = 'loading' | 'loaded' | 'loadFailed'
 
@@ -92,7 +85,7 @@ interface VueComponentLoad {
   (arg: Target): AsyncComponent
 }
 
-interface Loader extends PluginObject<never>, Load {
+export interface Loader extends PluginObject<never>, Load {
   options: Options
   load: Load
   unload: Unload
@@ -146,7 +139,6 @@ function loaderFactory(options?: Options): Loader {
 }
 loaderFactory.create = (options?: Options) => loaderFactory(options);
 
-// eslint-disable-next-line no-redeclare
 const Loader: LoaderFactory = loaderFactory;
 
 export default Loader;
