@@ -27,7 +27,7 @@ const onloadInner = <T>(
   }
   const handler = (deps: T[]) => {
     const result: T = factory(...deps) || <T>LoadedMap.exports;
-    if (factory.length > deps.length) Warn('The library that the library depends on may not be injected correctly, please check whether deps is correctly declared');
+    if (factory.length > deps.length) Warn('the library that the library depends on may not be injected correctly, please check whether deps is correctly declared');
     LoadedMap.exports = {};
     LoadedMap[name] = result;
     LoadStatusMap[name] = 'loaded';
