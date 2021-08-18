@@ -1,6 +1,6 @@
 import type { Options } from '../index';
 
-export const urlReg = /^((https|http|ftp|rtsp|mms):)?\/\//;
+export const urlReg = /^((https|http):)?\/\//;
 
 export const transformToUrl = (
   options: Options,
