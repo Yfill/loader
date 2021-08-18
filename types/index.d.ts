@@ -1,10 +1,6 @@
+import './vue';
 import type { AsyncComponent } from 'vue/types/options';
 import type { PluginObject } from 'vue/types/plugin';
-declare module 'vue/types/vue' {
-    interface Vue {
-        $loader: Loader;
-    }
-}
 export declare type LoadStatus = 'loading' | 'loaded' | 'loadFailed';
 export declare type CrossOrigin = 'anonymous' | 'use-credentials' | '' | undefined;
 export declare type Target = string | {
@@ -39,7 +35,7 @@ interface Unload {
 interface VueComponentLoad {
     (arg: Target): AsyncComponent;
 }
-interface Loader extends PluginObject<never>, Load {
+export interface Loader extends PluginObject<never>, Load {
     options: Options;
     load: Load;
     unload: Unload;
