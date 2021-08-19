@@ -65,7 +65,10 @@
   <script>
     var loader = Loader.create({
       libAliasMap: {
-        'vue-multiselect': ['vue-multiselect', 'vue-multiselect/dist/vue-multiselect.min.css']
+        'vue-multiselect': [
+          'vue-multiselect/dist/vue-multiselect.min.js', 
+          'vue-multiselect/dist/vue-multiselect.min.css'
+        ]
       }
     });
     var loadCom = loader.vueComponentLoad;
