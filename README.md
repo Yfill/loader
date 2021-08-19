@@ -86,10 +86,10 @@ yarn add @yfill/loader
     const loader = Loader.create({
       libAliasMap: {
         'vue-multiselect': [
-          'vue-multiselect',
-          'vue-multiselect/dist/vue-multiselect.min.css',
-        ],
-      },
+          'vue-multiselect/dist/vue-multiselect.min.js', 
+          'vue-multiselect/dist/vue-multiselect.min.css'
+        ]
+      }
     });
     const { vueComponentLoad: loadCom } = loader;
     (async function run() {
