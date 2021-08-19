@@ -7,11 +7,11 @@ export declare type Target = string | {
     name: string;
     style?: boolean;
     deps?: Target[];
-    nameAlias?: string;
+    scriptAlias?: string;
     styleAlias?: string;
 };
 export declare type Dep = Target;
-export declare type LibAlias = [nameAlias: string, styleAlias?: string, deps?: Dep[]];
+export declare type LibAlias = [scriptAlias: string, styleAlias?: string, deps?: Dep[]];
 export interface LibAliasMap {
     [key: string]: LibAlias;
 }
@@ -25,15 +25,15 @@ export interface Options {
     libAliasMap?: LibAliasMap;
 }
 interface Load {
-    <T>(arg: Target): Promise<T>;
-    <T>(arg: Target[]): Promise<T[]>;
+    <T>(target: Target): Promise<T>;
+    <T>(target: Target[]): Promise<T[]>;
 }
 interface Unload {
-    (arg: string): void;
-    (arg: string[]): void;
+    (name: string): void;
+    (names: string[]): void;
 }
 interface VueComponentLoad {
-    (arg: Target): AsyncComponent;
+    (target: Target): AsyncComponent;
 }
 export interface Loader extends PluginObject<never>, Load {
     options: Options;
