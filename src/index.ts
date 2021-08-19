@@ -72,17 +72,17 @@ const initSupportsPromiseDetection = () => {
 };
 
 interface Load {
-  <T>(arg: Target): Promise<T>
-  <T>(arg: Target[]): Promise<T[]>
+  <T>(target: Target): Promise<T>
+  <T>(target: Target[]): Promise<T[]>
 }
 
 interface Unload {
-  (arg: string): void
-  (arg: string[]): void
+  (name: string): void
+  (names: string[]): void
 }
 
 interface VueComponentLoad {
-  (arg: Target): AsyncComponent
+  (target: Target): AsyncComponent
 }
 
 export interface Loader extends PluginObject<never>, Load {
@@ -115,8 +115,8 @@ function loaderFactory(options?: Options): Loader {
   };
   initDnsPrefetch(opt);
   initPrefetch(opt);
-  function handler<T>(arg: Target): Promise<T>
-  function handler<T>(arg: Target[]): Promise<T[]>
+  function handler<T>(target: Target): Promise<T>
+  function handler<T>(targetList: Target[]): Promise<T[]>
   function handler<T>(arg: Target | Target[]): Promise<T | T[]> {
     if (arg instanceof Array) return load<T>(opt, arg);
     return load<T>(opt, arg);
@@ -134,7 +134,7 @@ function loaderFactory(options?: Options): Loader {
   handler.install = install;
   handler.load = handler;
   handler.unload = unload;
-  handler.vueComponentLoad = (arg: Target) => vueComponentLoad(opt, arg);
+  handler.vueComponentLoad = (target: Target) => vueComponentLoad(opt, target);
   return handler;
 }
 loaderFactory.create = (options?: Options) => loaderFactory(options);
