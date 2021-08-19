@@ -8,10 +8,10 @@ import { loadScript, unloadScript } from './script';
 export const loadSingle = <T>(options: Options, target: Target): Promise<T> => {
   const { enableSuffix, crossOrigin, libAliasMap } = options;
   const {
-    name, style = false, deps = [], nameAlias = '', styleAlias = '',
+    name, style = false, deps = [], scriptAlias = '', styleAlias = '',
   } = typeof target === 'string' ? { name: target } : target;
   const [nAlias, sAlias, lamDeps] = (libAliasMap || {})[name] || [];
-  const scriptUrl = transformToUrl(options, name, nameAlias || nAlias, enableSuffix ? '.js' : '');
+  const scriptUrl = transformToUrl(options, name, scriptAlias || nAlias, enableSuffix ? '.js' : '');
   if (style || styleAlias || sAlias) {
     const styleUrl = transformToUrl(options, name, styleAlias || sAlias, '.css');
     loadStyle(styleUrl, name);

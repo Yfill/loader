@@ -20,7 +20,7 @@ const onloadInner = <T>(
   const registry = options?.registry;
   const useJsdelivr = !urlReg.test(name) && (!registry || registry === JSDELIVR_REGISTRY);
   try {
-    assertionFunction(factory, `the library(${name}) does not point to umd or amd resources by default, you can point to the correct resource by setting nameAlias${useJsdelivr ? `, you can go to the website(https://www.jsdelivr.com/package/npm/${name}) to find the corresponding resources` : ''}`);
+    assertionFunction(factory, `the library(${name}) does not point to umd or amd resources by default, you can point to the correct resource by setting scriptAlias${useJsdelivr ? `, you can go to the website(https://www.jsdelivr.com/package/npm/${name}) to find the corresponding resources` : ''}`);
   } catch (err) {
     reject(err);
     return;

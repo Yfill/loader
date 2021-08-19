@@ -12,11 +12,11 @@ const addPrefetchElToHead = (name: string, url: string) => {
 export const prefetchSingle = (options: Options, target: Target) => {
   const { enableSuffix, libAliasMap } = options;
   const {
-    name, style = false, deps = [], nameAlias = '', styleAlias = '',
+    name, style = false, deps = [], scriptAlias = '', styleAlias = '',
   } = typeof target === 'string' ? { name: target } : target;
   if (document.head.querySelector(`link[prefetch-name="${name}"]`)) return;
   const [nAlias, sAlias, lamDeps] = (libAliasMap || {})[name] || [];
-  const scriptUrl = transformToUrl(options, name, nameAlias || nAlias, enableSuffix ? '.js' : '');
+  const scriptUrl = transformToUrl(options, name, scriptAlias || nAlias, enableSuffix ? '.js' : '');
   if (style || styleAlias || sAlias) {
     const styleUrl = transformToUrl(options, name, styleAlias || sAlias, '.css');
     addPrefetchElToHead(name, styleUrl);

@@ -17,13 +17,13 @@ export type Target = string | {
   name: string,
   style?: boolean,
   deps?: Target[],
-  nameAlias?: string,
+  scriptAlias?: string,
   styleAlias?: string,
 }
 
 export type Dep = Target
 
-export type LibAlias = [nameAlias: string, styleAlias?: string, deps?: Dep[]]
+export type LibAlias = [scriptAlias: string, styleAlias?: string, deps?: Dep[]]
 
 export interface LibAliasMap {
   [key: string]: LibAlias
