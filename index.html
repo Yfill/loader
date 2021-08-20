@@ -79,7 +79,7 @@
           Multiselect: loadCom('vue-multiselect'),
           VueDraggable: loadCom('vuedraggable')
         },
-        data() {
+        data: function() {
           return {
             drag: false,
             value: null,
@@ -91,9 +91,10 @@
             ]
           }
         },
-        async created() {
-          const dayjs = await this.$loader('dayjs');
-          console.log(dayjs().toString());
+        created: function () {
+          this.$loader('dayjs').then(function(dayjs){
+            console.log(dayjs().toString());
+          });
         }
       }).$mount('#template');
     })
