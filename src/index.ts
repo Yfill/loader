@@ -68,7 +68,7 @@ const initPrefetch = (options: Options) => {
 };
 
 const initSupportsPromiseDetection = () => {
-  if (typeof Promise === 'undefined') throw new Error('promise is a dependency of Loader, but Promise does not exist');
+  if (typeof Promise === 'undefined') throw new Error('Promise is a dependency of Loader, but Promise does not exist');
 };
 
 interface Load {
