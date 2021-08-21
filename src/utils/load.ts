@@ -10,10 +10,10 @@ export const loadSingle = <T>(options: Options, target: Target): Promise<T> => {
   const {
     name, style = false, deps = [], scriptAlias = '', styleAlias = '',
   } = typeof target === 'string' ? { name: target } : target;
-  const [nAlias, sAlias, lamDeps] = (libAliasMap || {})[name] || [];
-  const scriptUrl = transformToUrl(options, name, scriptAlias || nAlias, enableSuffix ? '.js' : '');
-  if (style || styleAlias || sAlias) {
-    const styleUrl = transformToUrl(options, name, styleAlias || sAlias, '.css');
+  const [scAlias, stAlias, lamDeps] = (libAliasMap || {})[name] || [];
+  const scriptUrl = transformToUrl(options, name, scriptAlias || scAlias, enableSuffix ? '.js' : '');
+  if (style || styleAlias || stAlias) {
+    const styleUrl = transformToUrl(options, name, styleAlias || stAlias, '.css');
     loadStyle(styleUrl, name);
   }
   const dependencies = (isArray(deps) && deps.length && deps)

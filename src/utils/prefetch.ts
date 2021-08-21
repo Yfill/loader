@@ -15,10 +15,10 @@ export const prefetchSingle = (options: Options, target: Target) => {
     name, style = false, deps = [], scriptAlias = '', styleAlias = '',
   } = typeof target === 'string' ? { name: target } : target;
   if (document.head.querySelector(`link[prefetch-name="${name}"]`)) return;
-  const [nAlias, sAlias, lamDeps] = (libAliasMap || {})[name] || [];
-  const scriptUrl = transformToUrl(options, name, scriptAlias || nAlias, enableSuffix ? '.js' : '');
-  if (style || styleAlias || sAlias) {
-    const styleUrl = transformToUrl(options, name, styleAlias || sAlias, '.css');
+  const [scAlias, stAlias, lamDeps] = (libAliasMap || {})[name] || [];
+  const scriptUrl = transformToUrl(options, name, scriptAlias || scAlias, enableSuffix ? '.js' : '');
+  if (style || styleAlias || stAlias) {
+    const styleUrl = transformToUrl(options, name, styleAlias || stAlias, '.css');
     addPrefetchElToHead(name, styleUrl);
   }
   const dependencies = (isArray(deps) && deps.length && deps)
