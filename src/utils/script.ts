@@ -1,11 +1,18 @@
 import { Warn } from './log';
 import { JSDELIVR_REGISTRY } from '../constant';
-import { getLoadBase, setLoadedObj } from './store';
+import { getLoadBase, setLoadedObj, clearLoadedTemp } from './store';
 import { loadMulti } from './load';
 import { assertionFunction, isArray } from './type';
 import { urlReg } from './url';
 import type { CrossOrigin, Options } from '../index';
 
+const removeLoadImpact = (name: string) => {
+  const { LoadedMap, LoadStatusMap } = getLoadBase();
+  const script = document.head.querySelector(`script[name="${name}"]`);
+  script?.parentNode?.removeChild(script);
+  delete LoadedMap[name];
+  delete LoadStatusMap[name];
+};
 const onloadInner = <T>(
   name: string,
   options: Options,
@@ -23,19 +30,18 @@ const onloadInner = <T>(
     const [libName, version] = `${name}`.split(/(?!^@)+@/);
     assertionFunction(factory, `the library(${name}) does not point to umd or amd resources by default, you can point to the correct resource by setting scriptAlias${useJsdelivr ? `, you can go to the website(https://www.jsdelivr.com/package/npm/${libName}?version=${version || ''}) to find the corresponding resources` : ''}`);
   } catch (err) {
+    removeLoadImpact(name);
+    clearLoadedTemp(name);
     reject(err);
     return;
   }
   const handler = (deps: T[]) => {
     const result: T = factory(...deps) || <T>LoadedMap.exports;
     if (factory.length > deps.length) Warn('the library that the library depends on may not be injected correctly, please check whether deps is correctly declared');
-    LoadedMap.exports = {};
     LoadedMap[name] = result;
     LoadStatusMap[name] = 'loaded';
+    clearLoadedTemp(name);
     (ResolveMap[name] || []).forEach((r) => r(result));
-    setLoadedObj(undefined);
-    delete ResolveMap[name];
-    delete RejectMap[name];
     resolve(result);
   };
   if (loadedDeps.length > 0 || !isArray(loDeps) || !(<string[]>loDeps).length) handler(loadedDeps);
@@ -85,15 +91,9 @@ export const loadScript = <T>(
     script.onerror = (e) => onerrorInner(name, reject);
     document.head.appendChild(script);
   });
-
 export const unloadScript = (name: string) => {
-  const { LoadedMap, LoadStatusMap } = getLoadBase();
-  const script = document.head.querySelector(`script[name="${name}"]`);
-  script?.parentNode?.removeChild(script);
-  delete LoadedMap[name];
-  delete LoadStatusMap[name];
+  removeLoadImpact(name);
 };
-
 export default {
   loadScript,
   unloadScript,

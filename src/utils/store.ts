@@ -17,3 +17,10 @@ export const getLoadBase = () => ({
 });
 
 export const setLoadedObj = (value?: LoadedData) => { LoadedObj = value; };
+
+export const clearLoadedTemp = (name: string) => {
+  LoadedMap.exports = {};
+  setLoadedObj(undefined);
+  delete ResolveMap[name];
+  delete RejectMap[name];
+};
