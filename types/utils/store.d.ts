@@ -19,4 +19,5 @@ export declare const getLoadBase: () => {
     LoadedObj: LoadedData | undefined;
 };
 export declare const setLoadedObj: (value?: LoadedData | undefined) => void;
+export declare const clearLoadedTemp: (name: string) => void;
 export {};
