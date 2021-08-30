@@ -21,7 +21,7 @@ const onloadInner = <T>(
   reject: Function,
 ) => {
   const {
-    LoadedMap, LoadStatusMap, ResolveMap, RejectMap, LoadedObj,
+    LoadedMap, LoadStatusMap, ResolveMap, LoadedObj,
   } = getLoadBase();
   const { deps: loDeps, factory } = LoadedObj || {};
   const registry = options?.registry;
@@ -68,8 +68,14 @@ export const loadScript = <T>(
     const {
       LoadedMap, LoadStatusMap, ResolveMap, RejectMap,
     } = getLoadBase();
-    if (LoadedMap[name]) {
-      resolve(LoadedMap[name] as T);
+    const optLoaded = <T | undefined>options?.loadedMap?.[name];
+    const loaded = <T | undefined>LoadedMap[name];
+    if (optLoaded) {
+      resolve(optLoaded);
+      return;
+    }
+    if (loaded) {
+      resolve(loaded);
       return;
     }
     if (document.head.querySelector(`script[name="${name}"]`)) {

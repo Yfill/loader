@@ -9,6 +9,7 @@ import {
 } from './utils/load';
 
 import { setLoadedObj, getLoadBase } from './utils/store';
+import { isObject } from './utils/type';
 
 declare const window: Window & { define: Function };
 
@@ -40,6 +41,8 @@ export interface Options {
   versionHandling?: boolean,
   prefetch?: boolean,
   libAliasMap?: LibAliasMap
+  loadedMap?: { [name: string]: unknown }
+  [key: string]: unknown
 }
 
 const initGlobalVariables = () => {
@@ -110,8 +113,12 @@ initGlobalVariables();
 function loaderFactory(options?: Options): Loader {
   const { registry, libAliasMap } = options || {};
   const useJsdelivr = !registry || registry === JSDELIVR_REGISTRY;
+  const loadedMap: { [key: string]: unknown } = isObject(options?.LoadedMap)
+    ? { ...(<object>options?.LoadedMap) }
+    : {};
   const opt = {
     ...DEFAULT_OPT,
+    loadedMap,
     enableSuffix: !useJsdelivr,
     versionHandling: !useJsdelivr,
     ...(options ?? {}),
@@ -137,6 +144,7 @@ function loaderFactory(options?: Options): Loader {
       },
     });
   }
+  if (!opt.loadedMap.$loader) opt.loadedMap.$loader = handler;
   handler.options = opt;
   handler.install = install;
   handler.load = handler;
