@@ -4,6 +4,7 @@ import { transformToUrl } from './url';
 import { isArray, getType } from './type';
 import { loadStyle, unloadStyle } from './style';
 import { loadScript, unloadScript } from './script';
+import { getLoadBase } from './store';
 
 export const loadSingle = <T>(options: Options, target: Target): Promise<T> => {
   const { enableSuffix, crossOrigin, libAliasMap } = options;
@@ -34,14 +35,22 @@ export const loadMulti = <T>(
 
 export const unloadMulti = (names: string[]) => { names.forEach((name) => unloadSingle(name)); };
 
+export function loaded<T>(name: string): T
+export function loaded<T>(names: string[]): T[]
+export function loaded<T>(arg: string | string[]) {
+  const { LoadedMap } = getLoadBase();
+  if (isArray(arg)) return (<string[]>arg).map((name: string) => LoadedMap[name]);
+  return LoadedMap[<string>arg];
+}
+
 export function load<T>(options: Options, target: Target): Promise<T>
 export function load<T>(options: Options, targetList: Target[]): Promise<T[]>
 export function load<T>(options: Options, arg: Target | Target[]): Promise<T | T[] | void> {
   const argType = getType(arg);
   if (isArray(arg)) return loadMulti<T>(options, arg as Target[]);
-  if (
-    ({ object: true, string: true } as { [key: string]: boolean })[argType]
-  ) return loadSingle<T>(options, arg as Target);
+  if (({ object: true, string: true } as { [key: string]: boolean })[argType]) {
+    return loadSingle<T>(options, arg as Target);
+  }
   return Promise.resolve();
 }
 

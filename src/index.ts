@@ -4,7 +4,10 @@ import type { AsyncComponent } from 'vue/types/options';
 import type { PluginObject } from 'vue/types/plugin';
 import { JSDELIVR_REGISTRY, DEFAULT_OPT } from './constant';
 import { prefetchMulti } from './utils/prefetch';
-import { vueComponentLoad, load, unload } from './utils/load';
+import {
+  vueComponentLoad, loaded, load, unload,
+} from './utils/load';
+
 import { setLoadedObj, getLoadBase } from './utils/store';
 
 declare const window: Window & { define: Function };
@@ -70,7 +73,10 @@ const initPrefetch = (options: Options) => {
 const initSupportsPromiseDetection = () => {
   if (typeof Promise === 'undefined') throw new Error('Promise is a dependency of Loader, but Promise does not exist');
 };
-
+interface Loaded {
+  <T>(name: string): T
+  <T>(names: string[]): T[]
+}
 interface Load {
   <T>(target: Target): Promise<T>
   <T>(target: Target[]): Promise<T[]>
@@ -87,6 +93,7 @@ interface VueComponentLoad {
 
 export interface Loader extends PluginObject<never>, Load {
   options: Options
+  loaded: Loaded
   load: Load
   unload: Unload
   vueComponentLoad: VueComponentLoad
@@ -133,6 +140,7 @@ function loaderFactory(options?: Options): Loader {
   handler.options = opt;
   handler.install = install;
   handler.load = handler;
+  handler.loaded = loaded;
   handler.unload = unload;
   handler.vueComponentLoad = (target: Target) => vueComponentLoad(opt, target);
   return handler;
