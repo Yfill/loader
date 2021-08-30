@@ -4,6 +4,8 @@ export declare const loadSingle: <T>(options: Options, target: Target) => Promis
 export declare const unloadSingle: (name: string) => void;
 export declare const loadMulti: <T>(options: Options, targetList: Target[]) => Promise<T[]>;
 export declare const unloadMulti: (names: string[]) => void;
+export declare function loaded<T>(name: string): T;
+export declare function loaded<T>(names: string[]): T[];
 export declare function load<T>(options: Options, target: Target): Promise<T>;
 export declare function load<T>(options: Options, targetList: Target[]): Promise<T[]>;
 export declare function unload(name: string): void;

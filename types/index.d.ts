@@ -23,6 +23,14 @@ export interface Options {
     versionHandling?: boolean;
     prefetch?: boolean;
     libAliasMap?: LibAliasMap;
+    loadedMap?: {
+        [name: string]: unknown;
+    };
+    [key: string]: unknown;
+}
+interface Loaded {
+    <T>(name: string): T;
+    <T>(names: string[]): T[];
 }
 interface Load {
     <T>(target: Target): Promise<T>;
@@ -37,6 +45,7 @@ interface VueComponentLoad {
 }
 export interface Loader extends PluginObject<never>, Load {
     options: Options;
+    loaded: Loaded;
     load: Load;
     unload: Unload;
     vueComponentLoad: VueComponentLoad;
