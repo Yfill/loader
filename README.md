@@ -93,7 +93,8 @@ yarn add @yfill/loader
     });
     const { vueComponentLoad: loadCom } = loader;
     (async function run() {
-      const Vue = await loader('vue');
+      // const Vue = await loader('vue');
+      const Vue = await loader('vue@2.6.14');
       Vue.use(loader);
       new Vue({
         components: {
