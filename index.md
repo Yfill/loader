@@ -1,5 +1,6 @@
 # [Loader](https://yfill.cn/loader)
 
+
 [![GitHub license][mit]][mit-url]
 [![Code Style][code-style]][code-style-url]
 [![NPM Package][npm]][npm-url]
@@ -93,7 +94,8 @@ yarn add @yfill/loader
     });
     const { vueComponentLoad: loadCom } = loader;
     (async function run() {
-      const Vue = await loader('vue');
+      // const Vue = await loader('vue');
+      const Vue = await loader('vue@2.6.14');
       Vue.use(loader);
       new Vue({
         components: {
