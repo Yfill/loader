@@ -1,3 +1,3 @@
-export declare const Log: (...arg: unknown[]) => void;
-export declare const Warn: (...arg: unknown[]) => void;
-export declare const Error: (...arg: unknown[]) => void;
+export declare const log: (...arg: unknown[]) => void;
+export declare const warn: (...arg: unknown[]) => void;
+export declare const error: (...arg: unknown[]) => void;
