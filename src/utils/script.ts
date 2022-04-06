@@ -1,4 +1,4 @@
-import { Warn } from './log';
+import { warn } from './log';
 import { JSDELIVR_REGISTRY } from '../constant';
 import { getLoadBase, clearLoadedTemp } from './store';
 import { loadMulti } from './load';
@@ -55,7 +55,7 @@ const onloadInner = <T>(
     switchCurrentScript(getScriptElementByName(name));
     const result: T = factory(...deps) || <T>LoadedMap.exports;
     switchCurrentScript(currentScript as HTMLScriptElement | null);
-    if (factory.length > deps.length) Warn('the library that the library depends on may not be injected correctly, please check whether deps is correctly declared');
+    if (factory.length > deps.length) warn('the library that the library depends on may not be injected correctly, please check whether deps is correctly declared');
     afterSuccess(name, resolve, result);
   };
   if (loadedDeps.length > 0 || !isArray(loDeps) || !(<string[]>loDeps).length) handler(loadedDeps);
