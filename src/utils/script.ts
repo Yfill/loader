@@ -1,19 +1,35 @@
 import { Warn } from './log';
 import { JSDELIVR_REGISTRY } from '../constant';
-import { getLoadBase, setLoadedObj, clearLoadedTemp } from './store';
+import { getLoadBase, clearLoadedTemp } from './store';
 import { loadMulti } from './load';
 import { assertionFunction, isArray } from './type';
 import { urlReg } from './url';
 import type { CrossOrigin, Options } from '../index';
 
-const getScriptElementByName = (name:string) => document.head.querySelector(`script[name="${name}"]`) as HTMLScriptElement | null;
-const switchCurrentScript = (currentScript:HTMLScriptElement | null) => Object.defineProperty(document, 'currentScript', { get: () => currentScript, configurable: true });
+const getScriptElementByName = (name: string) => document.head.querySelector(`script[name="${name}"]`) as HTMLScriptElement | null;
+const switchCurrentScript = (currentScript: HTMLScriptElement | null) => Object.defineProperty(document, 'currentScript', { get: () => currentScript, configurable: true });
 const removeLoadImpact = (name: string) => {
   const { LoadedMap, LoadStatusMap } = getLoadBase();
   const script = getScriptElementByName(name);
   script?.parentNode?.removeChild(script);
   delete LoadedMap[name];
   delete LoadStatusMap[name];
+};
+const afterError = (name: string, reject: Function, err: unknown) => {
+  const { LoadStatusMap, RejectMap } = getLoadBase();
+  LoadStatusMap[name] = 'loadFailed';
+  (RejectMap[name] || []).forEach((r) => r(err));
+  reject(err);
+  removeLoadImpact(name);
+  clearLoadedTemp(name);
+};
+const afterSuccess = <T>(name: string, resolve: Function, result: T) => {
+  const { LoadedMap, LoadStatusMap, ResolveMap } = getLoadBase();
+  LoadedMap[name] = result;
+  LoadStatusMap[name] = 'loaded';
+  (ResolveMap[name] || []).forEach((r) => r(result));
+  resolve(result);
+  clearLoadedTemp(name);
 };
 const onloadInner = <T>(
   name: string,
@@ -22,19 +38,16 @@ const onloadInner = <T>(
   resolve: Function,
   reject: Function,
 ) => {
-  const {
-    LoadedMap, LoadStatusMap, ResolveMap, LoadedObj,
-  } = getLoadBase();
+  const { LoadedMap, LoadedObj } = getLoadBase();
   const { deps: loDeps, factory } = LoadedObj || {};
   const registry = options?.registry;
   const useJsdelivr = !urlReg.test(name) && (!registry || registry === JSDELIVR_REGISTRY);
+
   try {
     const [libName, version] = `${name}`.split(/(?!^@)+@/);
     assertionFunction(factory, `the library(${name}) does not point to umd or amd resources by default, you can point to the correct resource by setting scriptAlias${useJsdelivr ? `, you can go to the website(https://www.jsdelivr.com/package/npm/${libName}?version=${version || ''}) to find the corresponding resources` : ''}`);
   } catch (err) {
-    removeLoadImpact(name);
-    clearLoadedTemp(name);
-    reject(err);
+    afterError(name, reject, err);
     return;
   }
   const handler = (deps: T[]) => {
@@ -43,25 +56,15 @@ const onloadInner = <T>(
     const result: T = factory(...deps) || <T>LoadedMap.exports;
     switchCurrentScript(currentScript as HTMLScriptElement | null);
     if (factory.length > deps.length) Warn('the library that the library depends on may not be injected correctly, please check whether deps is correctly declared');
-    LoadedMap[name] = result;
-    LoadStatusMap[name] = 'loaded';
-    clearLoadedTemp(name);
-    (ResolveMap[name] || []).forEach((r) => r(result));
-    resolve(result);
+    afterSuccess(name, resolve, result);
   };
   if (loadedDeps.length > 0 || !isArray(loDeps) || !(<string[]>loDeps).length) handler(loadedDeps);
   else loadMulti(options, <string[]>loDeps).then((deps) => handler(<T[]>deps));
 };
 
 const onerrorInner = (name: string, reject: Function) => {
-  const { LoadStatusMap, ResolveMap, RejectMap } = getLoadBase();
-  const error = new Error(`${name} load failed`);
-  LoadStatusMap[name] = 'loadFailed';
-  reject(error);
-  (RejectMap[name] || []).forEach((r) => r(error));
-  setLoadedObj(undefined);
-  delete ResolveMap[name];
-  delete RejectMap[name];
+  const err = new Error(`${name} load failed`);
+  afterError(name, reject, err);
 };
 export const loadScript = <T>(
   name: string,
@@ -83,7 +86,7 @@ export const loadScript = <T>(
       resolve(loaded);
       return;
     }
-    if (getScriptElementByName(name)) {
+    if (LoadStatusMap[name] === 'loading') {
       const resolveList = ResolveMap[name] || [];
       const rejectList = RejectMap[name] || [];
       resolveList.push(resolve);
@@ -99,7 +102,7 @@ export const loadScript = <T>(
     script.async = true;
     script.setAttribute('name', name);
     script.onload = () => onloadInner<T>(name, options, loadedDeps, resolve, reject);
-    script.onerror = (e) => onerrorInner(name, reject);
+    script.onerror = () => onerrorInner(name, reject);
     document.head.appendChild(script);
   });
 export const unloadScript = (name: string) => {
