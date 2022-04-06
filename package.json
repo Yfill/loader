@@ -1,6 +1,6 @@
 {
   "name": "@yfill/loader",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "A loader that loads modules asynchronously on demand",
   "author": "Yfill <vps998@gmail.com>",
   "homepage": "https://yfill.cn/loader",
