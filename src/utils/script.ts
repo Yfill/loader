@@ -20,7 +20,6 @@ const afterError = (name: string, reject: Function, err: unknown) => {
   LoadStatusMap[name] = 'loadFailed';
   (RejectMap[name] || []).forEach((r) => r(err));
   reject(err);
-  removeLoadImpact(name);
   clearLoadedTemp(name);
 };
 const afterSuccess = <T>(name: string, resolve: Function, result: T) => {
@@ -84,6 +83,10 @@ export const loadScript = <T>(
     }
     if (loaded) {
       resolve(loaded);
+      return;
+    }
+    if (LoadStatusMap[name] === 'loadFailed') {
+      onerrorInner(name, reject);
       return;
     }
     if (LoadStatusMap[name] === 'loading') {
