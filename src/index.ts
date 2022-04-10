@@ -10,7 +10,7 @@ import {
 } from './utils/load';
 
 import { setLoadedObj, getLoadBase } from './utils/store';
-import { isObject } from './utils/type';
+import { isArray, isObject } from './utils/type';
 
 declare const window: Window & { define: Function };
 
@@ -169,9 +169,14 @@ function loaderFactory(options?: Options): Loader {
       },
     });
   }
-
+  function loadedWrap<T>(name: string): T
+  function loadedWrap<T>(names: string[]): T[]
+  function loadedWrap<T>(arg: string | string[]) {
+    if (isArray(arg)) return loaded<T>(<string[]>arg, opt.loadedMap);
+    return loaded<T>(<string>arg, opt.loadedMap);
+  }
   function add(name: string, targetLoaded: unknown) {
-    if (opt.loadedMap[name] || loaded(name)) {
+    if (loadedWrap(name)) {
       warn(`${name} already exists`);
       return;
     }
@@ -183,7 +188,7 @@ function loaderFactory(options?: Options): Loader {
   handler.install = install;
   handler.add = add;
   handler.load = handler;
-  handler.loaded = loaded;
+  handler.loaded = loadedWrap;
   handler.unload = unload;
   handler.vueComponentLoad = (target: Target) => vueComponentLoad(opt, target);
   return handler;

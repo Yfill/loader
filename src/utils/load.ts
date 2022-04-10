@@ -35,12 +35,13 @@ export const loadMulti = <T>(
 
 export const unloadMulti = (names: string[]) => { names.forEach((name) => unloadSingle(name)); };
 
-export function loaded<T>(name: string): T
-export function loaded<T>(names: string[]): T[]
-export function loaded<T>(arg: string | string[]) {
+export function loaded<T>(name: string, optLoadedMap: { [name: string]: unknown }): T
+export function loaded<T>(names: string[], optLoadedMap: { [name: string]: unknown }): T[]
+export function loaded<T>(arg: string | string[], optLoadedMap: { [name: string]: unknown }) {
   const { LoadedMap } = getLoadBase();
-  if (isArray(arg)) return (<string[]>arg).map((name: string) => LoadedMap[name]);
-  return LoadedMap[<string>arg];
+  const get = (name: string) => optLoadedMap[name] || LoadedMap[name];
+  if (isArray(arg)) return (<string[]>arg).map((name: string) => get(name));
+  return get(<string>arg);
 }
 
 export function load<T>(options: Options, target: Target): Promise<T>
