@@ -32,6 +32,9 @@ interface Loaded {
     <T>(name: string): T;
     <T>(names: string[]): T[];
 }
+interface Add {
+    (name: string, targetLoaded: unknown): void;
+}
 interface Load {
     <T>(target: Target): Promise<T>;
     <T>(target: Target[]): Promise<T[]>;
@@ -46,6 +49,7 @@ interface VueComponentLoad {
 export interface Loader extends PluginObject<never>, Load {
     options: Options;
     loaded: Loaded;
+    add: Add;
     load: Load;
     unload: Unload;
     vueComponentLoad: VueComponentLoad;
