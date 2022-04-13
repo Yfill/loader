@@ -52,10 +52,13 @@ const onloadInner = <T>(
   const handler = (deps: T[]) => {
     const { currentScript } = document;
     switchCurrentScript(getScriptElementByName(name));
-    const result: T = factory(...deps) || <T>LoadedMap.exports;
-    switchCurrentScript(currentScript as HTMLScriptElement | null);
-    if (factory.length > deps.length) warn('the library that the library depends on may not be injected correctly, please check whether deps is correctly declared');
-    afterSuccess(name, resolve, result);
+    Promise.resolve(factory(...deps) || <T>LoadedMap.exports)
+      .then((result) => {
+        if (factory.length > deps.length) warn('the library that the library depends on may not be injected correctly, please check whether deps is correctly declared');
+        afterSuccess(name, resolve, result);
+      })
+      .catch((err) => afterError(name, reject, err))
+      .finally(() => switchCurrentScript(currentScript as HTMLScriptElement | null));
   };
   if (loadedDeps.length > 0 || !isArray(loDeps) || !(<string[]>loDeps).length) handler(loadedDeps);
   else loadMulti(options, <string[]>loDeps).then((deps) => handler(<T[]>deps));

@@ -12,11 +12,18 @@ const RejectMap: { [key: string]: Function[] } = {};
 
 let LoadedObj: LoadedData | undefined;
 
+declare const window: Window & { $LOADER_STORE: {LoadedObj: LoadedData | undefined} };
+
+window.$LOADER_STORE = { LoadedObj: undefined };
+
 export const getLoadBase = () => ({
   LoadedMap, LoadStatusMap, ResolveMap, RejectMap, LoadedObj,
 });
 
-export const setLoadedObj = (value?: LoadedData) => { LoadedObj = value; };
+export const setLoadedObj = (value?: LoadedData) => {
+  LoadedObj = value;
+  window.$LOADER_STORE.LoadedObj = value;
+};
 
 export const clearLoadedTemp = (name: string) => {
   LoadedMap.exports = {};
