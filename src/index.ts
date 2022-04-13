@@ -10,7 +10,7 @@ import {
 } from './utils/load';
 
 import { setLoadedObj, getLoadBase } from './utils/store';
-import { isArray, isObject } from './utils/type';
+import { isObject } from './utils/type';
 
 declare const window: Window & { define: Function };
 
@@ -172,8 +172,8 @@ function loaderFactory(options?: Options): Loader {
   function loadedWrap<T>(name: string): T
   function loadedWrap<T>(names: string[]): T[]
   function loadedWrap<T>(arg: string | string[]) {
-    if (isArray(arg)) return loaded<T>(<string[]>arg, opt.loadedMap);
-    return loaded<T>(<string>arg, opt.loadedMap);
+    if (arg instanceof Array) return loaded(arg, opt.loadedMap);
+    return loaded(arg, opt.loadedMap);
   }
   function add(name: string, targetLoaded: unknown) {
     if (loadedWrap(name)) {
